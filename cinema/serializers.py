@@ -13,10 +13,6 @@ from cinema.models import (
 )
 
 
-# ==========================================
-# 1. Базові серіалізатори (Елементарні моделі)
-# ==========================================
-
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Genre
@@ -34,10 +30,6 @@ class CinemaHallSerializer(serializers.ModelSerializer):
         model = CinemaHall
         fields = ("id", "name", "rows", "seats_in_row", "capacity")
 
-
-# ==========================================
-# 2. Серіалізатори для Фільмів (Movie)
-# ==========================================
 
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
@@ -62,10 +54,6 @@ class MovieDetailSerializer(MovieSerializer):
         model = Movie
         fields = ("id", "title", "description", "duration", "genres", "actors")
 
-
-# ==========================================
-# 3. Допоміжні серіалізатори Квитків та Замовлень
-# ==========================================
 
 class MovieSessionOrderListSerializer(serializers.ModelSerializer):
     movie_title = serializers.CharField(source="movie.title", read_only=True)
@@ -102,10 +90,6 @@ class TakenPlacesSerializer(serializers.ModelSerializer):
         model = Ticket
         fields = ("row", "seat")
 
-
-# ==========================================
-# 4. Серіалізатори Сеансів (MovieSession)
-# ==========================================
 
 class MovieSessionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -151,10 +135,6 @@ class MovieSessionDetailSerializer(serializers.ModelSerializer):
         fields = ("id", "show_time", "movie", "cinema_hall", "taken_places")
 
 
-# ==========================================
-# 5. Головні серіалізатори Квитків та Замовлень
-# ==========================================
-
 class TicketSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         movie_session = attrs["movie_session"]
@@ -171,7 +151,6 @@ class TicketSerializer(serializers.ModelSerializer):
                 f"{cinema_hall.seats_in_row}."
             )
 
-        # Валідація на дублікат броні
         is_taken = Ticket.objects.filter(
             movie_session=movie_session,
             row=attrs["row"],
